@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BioDun, frontend developer</title>
+<meta name="description" content="Portfolio of BioDun, a frontend developer learning cloud engineering on AWS and Azure.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDF1F5; --ink:#12202F; --muted:#4A5B6E; --line:#C9D5E3;
+  --cobalt:#2B45E0; --cobalt-ink:#fff; --signal:#E8960C; --surface:#F7F9FB;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Figtree","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#0F1824; --ink:#E8EEF5; --muted:#9DB0C4; --line:#24354A;
+        --cobalt:#7E93FF; --cobalt-ink:#0F1824; --signal:#FFB02E; --surface:#152233;}
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font:400 1.0625rem/1.65 var(--body);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px;border-radius:4px}
+.wrap{width:min(1080px,100% - 2.5rem);margin-inline:auto}
+
+header{padding:1.5rem 0}
+header .wrap{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.mark{font:800 1.25rem var(--display);text-decoration:none;letter-spacing:-.02em}
+nav{display:flex;gap:1.5rem}
+nav a{text-decoration:none;color:var(--muted);font-weight:500}
+nav a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
+
+.hero{padding:clamp(3rem,9vw,7rem) 0 clamp(3rem,7vw,5rem)}
+.hero h1{font:800 clamp(3.2rem,11vw,8.5rem)/.92 var(--display);letter-spacing:-.045em;max-width:12ch}
+.hero p.lede{margin-top:1.75rem;max-width:34rem;font-size:1.25rem;color:var(--muted)}
+.cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2rem}
+.btn{display:inline-block;padding:.8rem 1.4rem;border-radius:999px;font-weight:600;text-decoration:none;border:2px solid var(--ink);transition:background .2s,color .2s}
+.btn.primary{background:var(--cobalt);border-color:var(--cobalt);color:var(--cobalt-ink)}
+.btn.primary:hover{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper)}
+
+/* the hero's one memorable moment: this very page's journey */
+.path{margin-top:clamp(2.5rem,6vw,4.5rem);padding:1.5rem 1.25rem 1rem;border:1.5px solid var(--line);border-radius:18px;background:var(--surface)}
+.path svg{display:block;width:100%;height:auto;overflow:visible}
+.path .node{fill:var(--paper);stroke:var(--ink);stroke-width:2}
+.path .t{font:600 15px var(--body);fill:var(--ink);text-anchor:middle}
+.path .s{font:400 12.5px var(--body);fill:var(--muted);text-anchor:middle}
+.path .rail{stroke:var(--line);stroke-width:3;stroke-dasharray:2 8;stroke-linecap:round}
+.path .pkt{fill:var(--signal)}
+.path figcaption{margin-top:.75rem;color:var(--muted);font-size:.95rem}
+
+section{padding:clamp(3rem,7vw,5.5rem) 0;border-top:1.5px solid var(--line)}
+h2{font:800 clamp(1.9rem,4.5vw,2.8rem)/1.05 var(--display);letter-spacing:-.03em;margin-bottom:2rem}
+
+.work{list-style:none;padding:0;display:grid}
+.work li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:.5rem 3rem;padding:1.6rem 0;border-bottom:1.5px solid var(--line)}
+.work li:first-child{padding-top:0}
+.work h3{font:800 1.5rem/1.15 var(--display);letter-spacing:-.02em}
+.work .role{color:var(--muted);margin-top:.25rem}
+.work p{max-width:60ch}
+.tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.9rem;list-style:none;padding:0}
+.tags li{display:block;padding:.15rem .7rem;border:1.5px solid var(--line);border-radius:999px;font-size:.9rem;color:var(--muted);background:transparent}
+.work .tags li{border-bottom:1.5px solid var(--line);padding:.15rem .7rem}
+
+.about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:1rem 3rem}
+.about h2{margin-bottom:0}
+.about p+p{margin-top:1rem}
+.about p{max-width:60ch}
+
+.contact p{max-width:34rem;color:var(--muted);font-size:1.15rem}
+.contact .mail{display:inline-block;margin-top:1.25rem;font:800 clamp(1.5rem,5vw,2.6rem) var(--display);letter-spacing:-.03em;text-decoration-thickness:3px;text-underline-offset:8px;text-decoration-color:var(--cobalt)}
+.contact .mail:hover{text-decoration-color:var(--signal)}
+.links{display:flex;gap:1.5rem;margin-top:1.5rem;font-weight:600}
+
+footer{padding:2rem 0 3rem;color:var(--muted);font-size:.95rem;border-top:1.5px solid var(--line)}
+
+@media (max-width:720px){
+  .work li,.about{grid-template-columns:1fr}
+  nav{gap:1rem}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .pkt{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="mark" href="#top">BioDun</a>
+    <nav aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <h1>Frontend that holds up in the cloud.</h1>
+    <p class="lede">I’m BioDun, a frontend developer. I build clean, fast interfaces and I’m learning to ship and run them on AWS and Azure.</p>
+    <div class="cta">
+      <a class="btn primary" href="#work">See my work</a>
+      <a class="btn ghost" href="#contact">Get in touch</a>
+    </div>
+
+    <figure class="path">
+      <svg viewBox="0 0 900 150" role="img" aria-labelledby="pt pd">
+        <title id="pt">How this page reaches you</title>
+        <desc id="pd">A request travels from your browser to CloudFront, which fetches this page from a private S3 bucket and sends it back over HTTPS.</desc>
+        <line class="rail" x1="130" y1="60" x2="450" y2="60"/>
+        <line class="rail" x1="450" y1="60" x2="770" y2="60"/>
+        <circle class="node" cx="90" cy="60" r="38"/>
+        <circle class="node" cx="450" cy="60" r="38"/>
+        <circle class="node" cx="810" cy="60" r="38"/>
+        <text class="t" x="90" y="65">You</text>
+        <text class="t" x="450" y="65">CDN</text>
+        <text class="t" x="810" y="65">S3</text>
+        <text class="s" x="90" y="128">Your browser</text>
+        <text class="s" x="450" y="128">CloudFront, over HTTPS</text>
+        <text class="s" x="810" y="128">Private bucket</text>
+        <circle class="pkt" r="7" cy="60">
+          <animate attributeName="cx" values="90;450;810;450;90" keyTimes="0;.3;.5;.8;1" dur="6s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+      <figcaption>This page is the project: static files in a private S3 bucket, served worldwide by CloudFront.</figcaption>
+    </figure>
+  </div>
+
+  <section id="work">
+    <div class="wrap">
+      <h2>Selected work</h2>
+      <ul class="work">
+        <li>
+          <div>
+            <h3>Adigcon website</h3>
+            <p class="role">Frontend developer</p>
+          </div>
+          <div>
+            <p>The company site for a business working across construction, land retail and real estate. Built to present three services clearly to very different visitors.</p>
+            <ul class="tags"><li>React</li><li>Tailwind CSS</li></ul>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>AzureDrop</h3>
+            <p class="role">Frontend and design system, group project</p>
+          </div>
+          <div>
+            <p>A file upload web app running on Azure, built for my cloud computing cohort final project. I designed the interface and the shared design system.</p>
+            <ul class="tags"><li>Azure</li><li>Design system</li><li>Frontend</li></ul>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>This portfolio</h3>
+            <p class="role">Design, build and deploy</p>
+          </div>
+          <div>
+            <p>A static site on a private S3 bucket behind CloudFront with HTTPS. Part of a series of AWS projects I’m building in public as I learn.</p>
+            <ul class="tags"><li>AWS S3</li><li>CloudFront</li><li>HTTPS</li></ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap about">
+      <h2>About</h2>
+      <div>
+        <p>I started in frontend because I like making things people can use at first glance. Now I’m learning what happens after the code is written: hosting, security, automation and cost.</p>
+        <p>I’m working through hands-on AWS projects, from static hosting to serverless apps and infrastructure as code, and I document what I learn along the way.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <h2>Let’s talk</h2>
+      <p>I’m looking for a role where I can build interfaces and grow into cloud work. If that sounds like your team, say hello.</p>
+      <a class="mail" href="mailto:arohammed0.1@gmail.com">arohammed0.1@gmail.com</a>
+      <div class="links">
+        <a href="https://github.com/KaTaBioDun">GitHub</a>
+        <a href="https://www.linkedin.com/in/hammed-arogundade-62b350255/">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 BioDun. Hosted on AWS with S3 and CloudFront.</div>
+</footer>
+
+</body>
+</html>
