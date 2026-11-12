@@ -49,8 +49,11 @@ flowchart LR
 
 ```
 aws-portfolio-site/
-├── index.html    # The entire site: markup, styles, and inline SVG
-└── README.md     # This file
+├── .github/
+│   └── workflows/
+│       └── deploy.yml   # GitHub Actions: deploys on every push to main
+├── index.html           # The entire site: markup, styles, and inline SVG
+└── README.md            # This file
 ```
 
 ## Deploy manually
@@ -94,29 +97,45 @@ The response must be `HTTP/1.1 403 Forbidden`.
 
 ## Update the site
 
+Deployment is automated. To publish a change:
+
 1. Edit `index.html` locally.
-2. Commit and push the change:
+2. Commit and push to the `main` branch:
    ```bash
    git add index.html
    git commit -m "Describe the change"
    git push
    ```
-3. In S3, upload the changed `index.html` to the bucket. The upload overwrites the existing object.
-4. In CloudFront, open the distribution, go to **Invalidations → Create invalidation**, enter `/*`, and choose **Create invalidation**.
-5. Wait for the invalidation status to change to **Completed**, then reload the page.
+3. Open the repository's **Actions** tab and wait for the **Deploy to S3 and CloudFront** run to finish with a green check.
+4. Reload the site. Allow up to 2 minutes for the CloudFront cache invalidation to complete.
 
-Without step 4, CloudFront continues to serve the cached copy until the cache entry expires.
+## Automated deployment
+
+The workflow in `.github/workflows/deploy.yml` runs on every push to `main`.
+
+| Step | What it does |
+|---|---|
+| Check out repository | Copies the repository files to the runner |
+| Assume AWS role through OIDC | Exchanges a GitHub-issued identity token for temporary AWS credentials |
+| Upload `index.html` to S3 | Runs `aws s3 cp` to overwrite the object in the bucket |
+| Invalidate CloudFront cache | Runs `aws cloudfront create-invalidation` with the path `/*` |
+
+**Authentication.** The workflow uses OpenID Connect (OIDC). No AWS access keys are stored in GitHub.
+
+- An IAM identity provider trusts tokens issued by `token.actions.githubusercontent.com`.
+- The IAM role `github-actions-portfolio-deploy` has a trust policy that accepts tokens only from this repository's `main` branch.
+- The role's permissions policy is limited to `s3:ListBucket`, `s3:PutObject`, and `s3:DeleteObject` on this bucket, and `cloudfront:CreateInvalidation` on this distribution.
 
 ## Limitations
 
-- **Manual deployment.** Steps 3 and 4 in [Update the site](#update-the-site) are performed by hand.
+- **Single-file deployment.** The workflow uploads only `index.html`. Adding more site files requires changing the upload step to `aws s3 sync` with an exclude list, so `README.md` and `.github/` are not published.
 - **Default domain.** The site uses the `*.cloudfront.net` domain. A custom domain requires a Route 53 hosted zone or an external DNS provider, plus an AWS Certificate Manager certificate in `us-east-1`.
 - **Root path only.** The default root object applies only to `/`. A request to `/folder/` does not return `/folder/index.html`. This does not affect a single-page site.
 - **No infrastructure as code.** Resources were created in the console and are not yet defined in a template.
 
 ## Roadmap
 
-- [ ] Automate deployment with GitHub Actions. The workflow authenticates to AWS with OpenID Connect (OIDC) and an IAM role instead of stored access keys, uploads the site to S3, and invalidates the CloudFront cache.
+- [x] Automate deployment with GitHub Actions and OIDC.
 - [ ] Add a custom domain with Route 53 and ACM.
 - [ ] Define the S3 bucket and CloudFront distribution in Terraform or AWS CDK.
 
@@ -126,6 +145,8 @@ Without step 4, CloudFront continues to serve the cached copy until the cache en
 - **Origin Access Control.** The bucket stays private, and the bucket policy trusts one CloudFront distribution instead of the public.
 - **Billing access for IAM users.** IAM users cannot view billing pages until the root user turns on **IAM user and role access to Billing information** in the account settings.
 - **Cache invalidation.** Uploading a new file to S3 does not update what CloudFront serves until the cached copy is invalidated or expires.
+- **OIDC subject claim.** My first trust policy used `repo:<owner>/<repo>:ref:refs/heads/main`, and AWS rejected the role assumption with `Not authorized to perform sts:AssumeRoleWithWebIdentity`. I added a temporary workflow step that printed the token's `sub` claim and found that GitHub sent `repo:<owner>@<owner-id>/<repo>@<repo-id>:ref:refs/heads/main`. Updating the trust policy to that exact value fixed it.
+- **Least-privilege debugging.** The next failure was `AccessDenied` on `cloudfront:CreateInvalidation`. The error message named the exact action and resource, which pointed to the ARN in the permissions policy.
 
 ## Author
 
