@@ -1,0 +1,29 @@
+name: Deploy to S3 and CloudFront
+
+on:
+  push:
+    branches: [main]
+
+# Required so the job can request an OIDC token from GitHub
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Assume AWS role through OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::428571188297:role/github-actions-portfolio-deploy
+          aws-region: eu-west-2
+
+      - name: Upload index.html to S3
+        run: aws s3 cp index.html s3://biodun-portfolio-site-2026/index.html
+
+      - name: Invalidate CloudFront cache
+        run: aws cloudfront create-invalidation --distribution-id EDXIVSDJZG3UC --paths "/*"
